@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+
+    environment {
+        PROJECT_DIR = "atomic-crm"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://f000-172-203-190-240.ngrok-free.app/prabhdeep/Gitea_Atomic_CRM', branch: 'main'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                    sudo apt-get update
+                    sudo apt-get install -y make curl
+                    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+                    sudo apt-get install -y nodejs
+                    node -v
+                    npm -v
+                '''
+            }
+        }
+
+        stage('Install Project') {
+            steps {
+                sh '''
+                    cd $PROJECT_DIR
+                    make install
+                '''
+            }
+        }
+
+        stage('Start CRM') {
+            steps {
+                sh '''
+                    cd $PROJECT_DIR
+                    nohup make start &
+                    sleep 15  # give it some time to boot up
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Atomic CRM successfully deployed!'
+        }
+    }
+}
