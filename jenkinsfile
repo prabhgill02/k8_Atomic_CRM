@@ -8,17 +8,17 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://f000-172-203-190-240.ngrok-free.app/prabhdeep/Gitea_Atomic_CRM', branch: 'main'
+                git url: 'https://9f3a-20-42-11-18.ngrok-free.app/prabhdeep/atomic-crm', branch: 'main'
             }
         }
 
         stage('Install Dependencies') {
             steps {
                 sh '''
-                    sudo apt-get update
-                    sudo apt-get install -y make curl
+                    apt-get update
+                    apt-get install -y make curl
                     curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-                    sudo apt-get install -y nodejs
+                    apt-get install -y nodejs
                     node -v
                     npm -v
                 '''
